@@ -28,7 +28,7 @@ services:
 
   patient-api:
     build:
-      context: ./GraphQLGateway
+      context: ./PatientApi
     ports:
       - 5250:5250
     links:
