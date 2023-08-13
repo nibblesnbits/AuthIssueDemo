@@ -1,3 +1,3 @@
 # Hot Chocolate Auth Issue Repro
 
-To run, simply run `docker compose up` and observe the output.
+To repo, simply run `docker compose up`, then `dotnet run` in the `GraphQLGateway` directory.

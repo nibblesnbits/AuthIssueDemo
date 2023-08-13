@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using AspNetCore.Authentication.Basic;
-using PatientApi;
+using ProviderApi;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,10 +9,13 @@ builder.Services.AddTransient<IConnectionMultiplexer>(c =>
     ConnectionMultiplexer.Connect(c.GetRequiredService<IConfiguration>()["REDIS_URL"]));
 
 builder.Services.AddAuthentication()
-    .AddBasic(options => {
+    .AddBasic(options =>
+    {
         options.Realm = "MyApp";
-        options.Events = new BasicEvents {
-            OnValidateCredentials = context => {
+        options.Events = new BasicEvents
+        {
+            OnValidateCredentials = context =>
+            {
                 context.Principal = new ClaimsPrincipal(new ClaimsIdentity(new[] {
                     new Claim(ClaimTypes.NameIdentifier, context.Username)
                 }, context.Scheme.Name));
@@ -23,7 +26,7 @@ builder.Services.AddAuthentication()
     });
 builder.Services.AddAuthorization(o =>
 {
-    o.AddPolicy("IsProvider", p => p.RequireClaim(ClaimTypes.NameIdentifier, "provider"));
+    o.AddPolicy("IsPatient", p => p.RequireClaim(ClaimTypes.NameIdentifier, "patient"));
 });
 
 builder.Services
@@ -32,8 +35,8 @@ builder.Services
     .AddQueryType<Query>()
     .InitializeOnStartup()
     .PublishSchemaDefinition(c => c
-        .SetName("patientApi")
-        .PublishToRedis("patients",
+        .SetName("providerApi")
+        .PublishToRedis("providers",
             sp => sp.GetRequiredService<IConnectionMultiplexer>()));
 
 var app = builder.Build();

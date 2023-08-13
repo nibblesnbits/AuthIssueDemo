@@ -1,5 +1,3 @@
-using System.Security.Claims;
-using AspNetCore.Authentication.Basic;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +7,13 @@ builder.Services.AddHeaderPropagation(o => {
 });
 builder.Services.AddHttpClient("patientApi",
         (sp, client) => {
-            client.BaseAddress = new Uri(sp.GetRequiredService<IConfiguration>()["API_URL"]);
+            client.BaseAddress = new Uri(sp.GetRequiredService<IConfiguration>()["PATIENT_API_URL"]);
+        })
+    .AddHeaderPropagation();
+builder.Services.AddHttpClient("providerApi",
+        (sp, client) =>
+        {
+            client.BaseAddress = new Uri(sp.GetRequiredService<IConfiguration>()["PROVIDER_API_URL"]);
         })
     .AddHeaderPropagation();
 
@@ -18,33 +22,16 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
 
 builder.Services
     .AddGraphQLServer()
-    .AddAuthorization()
-    .InitializeOnStartup()
     .AddRemoteSchemasFromRedis("patients", sp =>
-        sp.GetRequiredService<IConnectionMultiplexer>());
-
-builder.Services.AddAuthentication()
-    .AddBasic(options => {
-        options.Events = new BasicEvents {
-            OnValidateCredentials = context => {
-                context.Principal = new ClaimsPrincipal(new ClaimsIdentity(new[] {
-                    new Claim(ClaimTypes.NameIdentifier, context.Username)
-                }, context.Scheme.Name));
-                context.Success();
-                return Task.CompletedTask;
-            }
-        };
-    });
-builder.Services.AddAuthorization();
+        sp.GetRequiredService<IConnectionMultiplexer>())
+    .AddRemoteSchemasFromRedis("providers", sp =>
+        sp.GetRequiredService<IConnectionMultiplexer>())
+    .InitializeOnStartup();
 
 var app = builder.Build();
 
 app.UseHeaderPropagation();
 
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.MapGraphQL()
-    .RequireAuthorization();
+app.MapGraphQL();
 
 app.Run();

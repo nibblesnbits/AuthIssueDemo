@@ -9,7 +9,8 @@
       "applicationUrl": "http://localhost:5100",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "API_URL": "http://localhost:5250/graphql",
+        "PATIENT_API_URL": "http://localhost:5250/graphql",
+        "PROVIDER_API_URL": "http://localhost:5255/graphql",
         "REDIS_URL": "localhost:6379"
       }
     }
