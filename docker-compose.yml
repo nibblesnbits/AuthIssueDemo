@@ -1,0 +1,49 @@
+version: "3.9"
+services:
+  redis:
+    image: redis:7
+    restart: always
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning --logfile /data/redis.log
+    volumes:
+      - redis:/data/redis
+
+  graphql-gateway:
+    build:
+      context: ./GraphQLGateway
+    ports:
+      - "5100:5100"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5100
+      - API_URL=http://patient-api:5250/graphql
+      - REDIS_URL=redis:6379
+    links:
+      - patient-api
+      - redis
+    depends_on:
+      - redis
+      - patient-api
+
+  patient-api:
+    build:
+      context: ./GraphQLGateway
+    ports:
+      - 5250:5250
+    links:
+      - redis
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5250
+      - REDIS_URL=redis:6379
+    depends_on:
+      - redis
+
+volumes:
+  redis:
+    external: false
+
+secrets:
+  npmrc:
+    file: ~/.npmrc

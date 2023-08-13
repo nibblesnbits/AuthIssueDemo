@@ -1,0 +1,17 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+#
+Project("{F9A9621D-BC3B-454A-B9BA-9949873BA1FF}") = "GraphQLGateway", ".\GraphQLGateway\GraphQLGateway.csproj", "{1ADEC706-E28A-45D6-9963-FB3CB647C509}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1ADEC706-E28A-45D6-9963-FB3CB647C509}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ADEC706-E28A-45D6-9963-FB3CB647C509}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ADEC706-E28A-45D6-9963-FB3CB647C509}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ADEC706-E28A-45D6-9963-FB3CB647C509}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
